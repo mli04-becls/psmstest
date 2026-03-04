@@ -17,18 +17,17 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Show repo tree (top)
+      - name: Show tree
         run: |
-          pwd
-          ls -la
-          echo "---- dashboards/site ----"
-          ls -la dashboards/site || true
-          echo "---- dashboards/site/docs ----"
-          ls -la dashboards/site/docs || true
+          echo "== dashboards/site/docs =="
+          ls -R dashboards/site/docs || true
+          echo "== dashboards/data =="
+          ls -R dashboards/data || true
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -37,27 +36,23 @@ jobs:
 
       - name: Install MkDocs + Material
         run: |
-          python -m pip install --upgrade pip
           pip install mkdocs mkdocs-material
-          mkdocs --version
 
-      - name: Prepare data into docs/data
+      # 关键修改：强制创建 data 目录并复制
+      - name: Copy data into docs/data
         run: |
           mkdir -p dashboards/site/docs/data
-          if [ -d "dashboards/data" ]; then
-            cp -r dashboards/data/* dashboards/site/docs/data/ || true
-          fi
-          ls -la dashboards/site/docs/data || true
+          cp -r dashboards/data/* dashboards/site/docs/data/ 2>/dev/null || true
+          echo "== after copy =="
+          ls -R dashboards/site/docs/data || true
 
-      # 在站点目录内执行构建，MkDocs 默认输出到 ./site
-      - name: Build site (inside dashboards/site)
+      - name: Build MkDocs site
         working-directory: dashboards/site
         run: |
           mkdocs build --strict --verbose
-          echo "Built output:"
-          ls -la site
+          echo "== built site directory =="
+          ls -R site
 
-      # 上传 dashboards/site/site 作为 Pages 工件
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -68,7 +63,5 @@ jobs:
     needs: build
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
