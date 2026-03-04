@@ -1,0 +1,54 @@
+name: Publish Dashboards (MkDocs)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'dashboards/site/**'
+      - 'dashboards/data/**'
+      - '.github/workflows/publish-dashboards.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install MkDocs + Material
+        run: |
+          pip install mkdocs mkdocs-material
+
+      - name: Prepare data into docs/data
+        run: |
+          mkdir -p dashboards/site/docs/data
+          rsync -av --delete dashboards/data/ dashboards/site/docs/data/ || true
+
+      - name: Build site
+        run: |
+          mkdocs build -f dashboards/site/mkdocs.yml --site-dir _site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
