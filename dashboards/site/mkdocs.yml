@@ -1,0 +1,32 @@
+site_name: Product Security Management - Dashboards
+site_description: "PSMS 可视化看板"
+site_author: "Security Team"
+site_url: https://example.com/
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - content.code.copy
+    - content.tabs.link
+    - toc.follow
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+
+docs_dir: docs
+use_directory_urls: true
+
+extra_css:
+  - assets/css/style.css
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js
+  - assets/js/dashboard.js
+
+nav:
+  - 仪表盘: index.md
+
+repo_name: "ORG/REPO"
+repo_url: "https://github.com/ORG/REPO"
