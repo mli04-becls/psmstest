@@ -1,4 +1,4 @@
-name: Publish Dashboards (MkDocs)
+name: Publish Dashboards (MkDocs Test)
 
 on:
   push:
