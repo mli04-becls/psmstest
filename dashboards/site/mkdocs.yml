@@ -27,6 +27,7 @@ extra_javascript:
 
 nav:
   - 仪表盘: index.md
+  - 产品管理: manage.md
 
 repo_name: "ORG/REPO"
 repo_url: "https://github.com/ORG/REPO"
