@@ -1,0 +1,30 @@
+
+name: PSMS - Generate Dashboard Data
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'products/**'
+      - 'baseline/**'
+      - 'scripts/generate_dashboard_data.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  gen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyyaml
+      - run: python scripts/generate_dashboard_data.py
+      - name: Commit dashboards data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(psms): update dashboards data"
+          file_pattern: dashboards/data/*

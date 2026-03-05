@@ -1,0 +1,47 @@
+
+name: PSMS - Sync Issue Forms to YAML
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: write
+
+jobs:
+  sync:
+    if: contains(github.event.issue.labels.*.name, 'psms:add-product') || contains(github.event.issue.labels.*.name, 'psms:update-product')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install pyyaml
+
+      - name: Parse issue & update YAMLs
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_LABELS: ${{ toJson(github.event.issue.labels) }}
+        run: |
+          python scripts/issue_to_yaml.py
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore(psms): sync issue form to YAML"
+          title: "[PSMS] Sync issue form to YAML (Issue #${{ github.event.issue.number }})"
+          body: |
+            Auto-generated from Issue #${{ github.event.issue.number }}
+
+This PR syncs Issue Form data to YAML.
+          branch: "psms/issue-${{ github.event.issue.number }}"
+          delete-branch: true

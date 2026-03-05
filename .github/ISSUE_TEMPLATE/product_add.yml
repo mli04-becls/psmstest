@@ -1,0 +1,44 @@
+
+name: "新增产品（PSMS）"
+description: "填写新产品的基本信息，提交后自动创建产品目录与 YAML（经由 Actions 发起 PR）"
+title: "[PSMS] 新增产品: "
+labels: ["psms:add-product"]
+body:
+  - type: input
+    id: product_id
+    attributes:
+      label: 产品ID（目录名，例：PRD-1001）
+      placeholder: "PRD-1001"
+    validations:
+      required: true
+  - type: input
+    id: product_name
+    attributes:
+      label: 产品名称
+      placeholder: "SmartMed Monitor"
+    validations:
+      required: true
+  - type: textarea
+    id: intended_use
+    attributes:
+      label: 预期用途
+      placeholder: "用于……"
+  - type: input
+    id: owner
+    attributes:
+      label: 产品负责人邮箱
+      placeholder: "andrew.li@company.com"
+  - type: dropdown
+    id: regions
+    attributes:
+      label: 注册区域
+      multiple: true
+      options:
+        - FDA
+        - NMPA
+        - EU-MDR
+  - type: input
+    id: lifecycle
+    attributes:
+      label: 生命周期阶段
+      placeholder: "Design / Development / Verification / Released"

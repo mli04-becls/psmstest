@@ -1,0 +1,29 @@
+
+name: "修改产品信息（PSMS）"
+description: "选择已存在的产品ID并提交修改项（经由 Actions 发起 PR）"
+title: "[PSMS] 修改产品: "
+labels: ["psms:update-product"]
+body:
+  - type: input
+    id: product_id
+    attributes:
+      label: 目标产品ID（例：PRD-1001）
+    validations:
+      required: true
+  - type: textarea
+    id: fields
+    attributes:
+      label: 需要修改的字段（键=值，每行一个）
+      description: |
+        例如：
+        name=SmartMed X
+        owner=andrew.li@company.com
+        lifecycle_stage=Verification
+        intended_use=用于……
+        regions=FDA, NMPA
+      placeholder: |
+        name=...
+        owner=...
+        lifecycle_stage=...
+        intended_use=...
+        regions=FDA, NMPA
